@@ -1,3 +1,2 @@
-<p>
-  upload-form works!
-</p>
+<input type="file" #filelist (change)="upload(filelist.files)" placeholder="Upload files">
+<p>{{filename}}</p>
