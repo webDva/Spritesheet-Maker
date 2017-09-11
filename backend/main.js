@@ -7,7 +7,15 @@ let path = require('path');
 
 // Setup
 const UPLOAD_PATH = './backend/uploads';
-const upload = multer({dest: `${UPLOAD_PATH}/`});
+let storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, `${UPLOAD_PATH}/`);
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
+const upload = multer({storage: storage});
 
 /*
  * API Server
