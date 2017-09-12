@@ -4,6 +4,7 @@ let multer = require('multer');
 let cors = require('cors');
 let fs = require('fs');
 let path = require('path');
+let bodyParser = require('body-parser');
 
 // Setup
 const UPLOAD_PATH = './backend/uploads';
@@ -23,6 +24,9 @@ const upload = multer({storage: storage});
 
 const app = express();
 app.use(cors()); // Needed for file sharing.
+// Needed for POST requests.
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const port = process.env.PORT || '3000';
 app.set('port', port);

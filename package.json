@@ -10,11 +10,13 @@
     ],
     "scripts": {
         "start": "node backend/main.js",
-        "start debug": "node --inspect --debug-brk backend/main.js"
+        "start debug": "node --inspect --debug-brk backend/main.js",
+        "start debug no break": "node --inspect backend/main.js"
     },
     "author": "Web D.va",
     "contributors": [],
     "dependencies": {
+        "body-parser": "^1.18.0",
         "cors": "^2.8.4",
         "express": "^4.15.4",
         "fs": "0.0.1-security",
