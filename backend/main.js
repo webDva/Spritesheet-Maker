@@ -28,9 +28,9 @@ const port = process.env.PORT || '3000';
 app.set('port', port);
 
 // File upload
-app.post('/upload', upload.single('file'), (req, res) => {
-    res.send(req.file);
-    console.log('receieved a file');
+app.post('/upload', upload.array('files'), (req, res) => {
+    res.send(req.files);
+    console.log('receieved files');
 });
 
 /*
