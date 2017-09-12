@@ -7,10 +7,15 @@ import {Component, OnInit} from '@angular/core';
 })
 export class UploadFormComponent implements OnInit {
 
-    filename = '';
+    files: FileList;
+    isForTiledMaps: boolean = false; // A setting for when the user wants to use this service for making Tiled maps.
 
     upload(files: FileList) {
-        this.filename = files[0].name;
+        this.files = files;
+    }
+
+    makeSpriteSheet() {
+
     }
 
     constructor() {}

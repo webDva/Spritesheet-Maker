@@ -1,2 +1,2 @@
-<input type="file" #filelist (change)="upload(filelist.files)" placeholder="Upload files">
-<p>{{filename}}</p>
+<input type="file" #filelist multiple (change)="upload(filelist.files)" placeholder="Upload files">
+<button type="button" (click)="makeSpriteSheet()" [disabled]="!files">Send for making</button>
