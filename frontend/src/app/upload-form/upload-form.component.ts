@@ -28,10 +28,20 @@ export class UploadFormComponent implements OnInit {
 //                this.url.replace('unsafe:', '');
 //            };
 //            reader.readAsDataURL(new Blob([data['yourFreakingFile']]));
-            let bufferData = data['yourFreakingFile']['data'];
-            this.blob = new Blob([bufferData], {type: 'image/png'}); // {type: 'image/png'}
-            let urlCreator = window.URL;
-            this.url = urlCreator.createObjectURL(this.blob);
+            //let bufferData = data['yourFreakingFile']['data'];
+            //this.blob = new Blob([bufferData], {type: 'image/png'}); // {type: 'image/png'}
+
+            let binary = '';
+            let bytes = new Uint8Array( data['yourFreakingFile']['data'] );
+            let len = bytes.byteLength;
+            for (let i = 0; i < len; i++) {
+              binary += String.fromCharCode( bytes[ i ] );
+            }
+            let base64Image = window.btoa( binary );
+
+            this.url = "data:" + 'image/png' + ';base64, ' + base64Image;            
+            //let urlCreator = window.URL;
+            //this.url = urlCreator.createObjectURL(this.blob);
             //this.url.replace('unsafe:', '');
         });
     }
