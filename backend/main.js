@@ -17,8 +17,7 @@ let storage = multer.diskStorage({
         cb(null, Date.now() + '-' + file.originalname);
     }
 });
-//const upload = multer({storage: storage});
-const upload = multer({storage: multer.memoryStorage()});
+const upload = multer({storage: storage});
 
 /*
  * API Server
@@ -42,10 +41,9 @@ app.post('/upload', upload.array('files'), (req, res) => {
             receivedImages.push(currentFile.path);
         }
     });
-    res.send({'yourFreakingFile': req.files[0].buffer});
-//    Spritesmith.run({src: receivedImages}, (err, result) => {
-//        res.send({'yourFreakingFile': result.image});
-//    });
+    Spritesmith.run({src: receivedImages}, (err, result) => {
+        res.send({'newImage': result.image});
+    });
     console.log('receieved files');
 });
 
