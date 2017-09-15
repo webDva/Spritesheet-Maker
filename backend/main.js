@@ -5,6 +5,7 @@ let cors = require('cors');
 let fs = require('fs');
 let path = require('path');
 let bodyParser = require('body-parser');
+let Spritesmith = require('spritesmith');
 
 // Setup
 const UPLOAD_PATH = './backend/uploads';
@@ -16,7 +17,8 @@ let storage = multer.diskStorage({
         cb(null, Date.now() + '-' + file.originalname);
     }
 });
-const upload = multer({storage: storage});
+//const upload = multer({storage: storage});
+const upload = multer({storage: multer.memoryStorage()});
 
 /*
  * API Server
@@ -26,14 +28,24 @@ const app = express();
 app.use(cors()); // Needed for file sharing.
 // Needed for POST requests.
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 
 const port = process.env.PORT || '3000';
 app.set('port', port);
 
 // File upload
 app.post('/upload', upload.array('files'), (req, res) => {
-    res.send(req.files);
+    let receivedImages = [];
+    let imageType = /^image\//;
+    req.files.forEach(currentFile => {
+        if (imageType.test(currentFile.mimetype)) {
+            receivedImages.push(currentFile.path);
+        }
+    });
+    res.send({'yourFreakingFile': req.files[0].buffer});
+//    Spritesmith.run({src: receivedImages}, (err, result) => {
+//        res.send({'yourFreakingFile': result.image});
+//    });
     console.log('receieved files');
 });
 

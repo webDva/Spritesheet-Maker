@@ -10,6 +10,8 @@ import {HttpHeaders} from '@angular/common/http';
 })
 export class UploadFormComponent implements OnInit {
 
+    url: String;
+    blob: Blob;
     isForTiledMaps: boolean = false; // A setting for when the user wants to use this service for making Tiled maps.
     // settings go here
 
@@ -19,7 +21,19 @@ export class UploadFormComponent implements OnInit {
             formData.append('files', files[i], files[i].name);
         }
 
-        this.http.post('/upload', formData).subscribe();
+        this.http.post('/upload', formData).subscribe(data => {
+//            let reader = new FileReader();
+//            reader.onload = () => {
+//                this.url = reader.result;
+//                this.url.replace('unsafe:', '');
+//            };
+//            reader.readAsDataURL(new Blob([data['yourFreakingFile']]));
+            let bufferData = data['yourFreakingFile']['data'];
+            this.blob = new Blob([bufferData], {type: 'image/png'}); // {type: 'image/png'}
+            let urlCreator = window.URL;
+            this.url = urlCreator.createObjectURL(this.blob);
+            //this.url.replace('unsafe:', '');
+        });
     }
 
     makeSpriteSheet() {
