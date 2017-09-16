@@ -3,6 +3,13 @@ import {Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 
+interface UploadResponseType {
+    newImage: {
+        type: String;
+        data: Uint8Array;
+    }
+}
+
 @Component({
     selector: 'app-upload-form',
     templateUrl: './upload-form.component.html',
@@ -21,15 +28,9 @@ export class UploadFormComponent implements OnInit {
             formData.append('files', files[i], files[i].name);
         }
 
-        this.http.post('/upload', formData).subscribe(data => {
-            let binary = '';
-            let bytes = new Uint8Array(data['newImage']['data']);
-            let len = bytes.byteLength;
-            for (let i = 0; i < len; i++) {
-                binary += String.fromCharCode(bytes[i]);
-            }
-            let base64Image = window.btoa(binary);
-            this.url = this.sanitzer.bypassSecurityTrustUrl('data:image/png;base64, ' + base64Image);
+        this.http.post<UploadResponseType>('/upload', formData).subscribe(data => {
+            let blob = new Blob([new Uint8Array(data['newImage']['data'])], {type: 'image/png'});
+            this.url = this.sanitzer.bypassSecurityTrustUrl(window.URL.createObjectURL(blob));
         });
     }
 
