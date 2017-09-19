@@ -7,17 +7,26 @@ let path = require('path');
 let bodyParser = require('body-parser');
 let Spritesmith = require('spritesmith');
 
-// Setup
+// Configuration for multer
 const UPLOAD_PATH = './backend/uploads';
-let storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, `${UPLOAD_PATH}/`);
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname);
+const upload = multer({storage: multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, `${UPLOAD_PATH}/`);
+        },
+        filename: (req, file, cb) => {
+            cb(null, Date.now() + '-' + file.originalname);
+        }
+    }),
+
+    fileFilter: (req, file, cb) => {
+        // Skip the file if it's not an image.
+        if (!/^image\//.test(file.mimetype)) {
+            return cb(null, false);
+        }
+
+        cb(null, true);
     }
 });
-const upload = multer({storage: storage});
 
 /*
  * API Server
@@ -34,16 +43,16 @@ app.set('port', port);
 
 // File upload
 app.post('/upload', upload.array('files'), (req, res) => {
-    let receivedImages = [];
-    let imageType = /^image\//;
-    req.files.forEach(currentFile => {
-        if (imageType.test(currentFile.mimetype)) {
-            receivedImages.push(currentFile.path);
-        }
+    // Add paths of each image so that they can be ran under Spritesmith.
+    let images = [];
+    req.files.forEach(image => {
+        images.push(image.path);
     });
-    Spritesmith.run({src: receivedImages}, (err, result) => {
+
+    Spritesmith.run({src: images}, (err, result) => {
         res.send({'newImage': result.image});
     });
+
     console.log('receieved files');
 });
 
