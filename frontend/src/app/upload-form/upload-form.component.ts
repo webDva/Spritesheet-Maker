@@ -23,13 +23,31 @@ export class UploadFormComponent implements OnInit {
 
     url: SafeUrl = '';
     blob: Blob;
-    isForTiledMaps: boolean = false; // A setting for when the user wants to use this service for making Tiled maps.
-    // settings go here
 
-    upload(files: FileList) {
+    files: FileList;
+
+    // User's spritesheet settings
+    isForTiledMaps: boolean = false; // A setting for when the user wants to use this service for making Tiled maps.
+    padding: number;
+
+    upload(files?: FileList, padding?: number) {
+        if (files) {
+            this.files = files;
+        }
+
         let formData = new FormData();
-        for (let i = 0; i < files.length; i++) {
-            formData.append('files', files[i], files[i].name);
+
+        if (files) {
+            for (let i = 0; i < files.length; i++) {
+                formData.append('files', files[i], files[i].name);
+            }
+        } else {
+            for (let i = 0; i < this.files.length; i++) {
+                formData.append('files', this.files[i], this.files[i].name);
+            }
+
+            this.padding = padding;
+            formData.append('padding', this.padding);
         }
 
         this.http.post<UploadResponseType>(this.baseUrl + '/upload', formData).subscribe(data => {

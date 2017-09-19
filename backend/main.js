@@ -49,7 +49,9 @@ app.post('/upload', upload.array('files'), (req, res) => {
         images.push(image.path);
     });
 
-    Spritesmith.run({src: images}, (err, result) => {
+    let padding = Number(req.body.padding);
+
+    Spritesmith.run({src: images, padding: padding}, (err, result) => {
         res.send({'newImage': result.image});
     });
 

@@ -3,3 +3,4 @@
 <div id="image-preview">
     <img [src]="url" alt="image preview">
 </div>
+<input #padding (input)="upload(null, padding.value)" [disabled]="!files" placeholder="Padding">
