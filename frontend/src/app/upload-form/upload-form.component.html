@@ -1,3 +1,5 @@
 <input type="file" #filelist multiple (change)="upload(filelist.files)" placeholder="Upload files">
 <button type="button" (click)="makeSpriteSheet()" [disabled]="!files">Send for making</button>
-<img id="image" [src]="url" alt="ん">
+<div id="image-preview">
+    <img [src]="url" alt="image preview">
+</div>
